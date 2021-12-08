@@ -4,6 +4,7 @@ import bitloopsConfig from './bitloopsConfig';
 const bitloops = Bitloops.initialize(bitloopsConfig);
 bitloops.authenticate({
   authenticationType: AuthTypes.Anonymous, // change this
+  token: '',
 });
 
 export { bitloops };
