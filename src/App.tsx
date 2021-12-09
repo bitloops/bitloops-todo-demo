@@ -1,14 +1,14 @@
-import React, { useState, useEffect, MouseEventHandler } from 'react';
-import { FaTrash, FaPen } from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
+import { FaTrash } from 'react-icons/fa';
 import { v4 as uuid } from 'uuid';
 import { bitloops, todoWorkflow } from './bitloops';
 import './App.css';
 
-type Item = {
-  text: string;
-  status: boolean;
-  id: string;
-};
+// type Item = {
+//   text: string;
+//   status: boolean;
+//   id: string;
+// };
 
 type BitloopsEventType = {
   event: string;
@@ -39,12 +39,11 @@ function App() {
   const fetchToDos = async () => {
     const [response, error] = await todoWorkflow({ command: 'getAll' });
     if (error) return;
-    console.log('fetched All response', response);
     setData(response.data);
   };
 
   const handleSubscribe = (payload: any, event: string) => {
-    console.log('received event', event, payload)
+    console.log('received event', event, payload);
     const bitloopsEvent = {
       event,
       bitloopsData: payload,
@@ -118,7 +117,6 @@ function App() {
 
   useEffect(() => {
     if (bitloopsEvent) {
-      console.log('event', bitloopsEvent);
       const { bitloopsData, event } = bitloopsEvent;
       const updatedArray = JSON.parse(JSON.stringify(data));
 
@@ -155,7 +153,7 @@ function App() {
   return (
     <div className="todolist">
       <div className="heading">
-        <h1 className="title">Bitloops To-Do Demo</h1>
+        <h1 className="title">Bitloops<br/>To-Do Demo</h1>
       </div>
       <input
         type="text"
@@ -169,7 +167,7 @@ function App() {
         <ul>
           {data.map(({ text, id, status }) => (
             <li key={id}>
-              <input className='checkbox' id={id} type="checkbox" defaultChecked={status === ViewStates.COMPLETED} onClick={handleCheckbox} />
+              <input className='checkbox' id={id} type="checkbox" checked={status === ViewStates.COMPLETED} onChange={handleCheckbox} />
               {editable === id ? (
                 <input
                   type="text"
@@ -187,16 +185,6 @@ function App() {
                 }}>{text}</p>
               )}
               <div className="actions">
-                {/* <FaPen
-                  onClick={() => {
-                    // setItems((prevItems: any[]) => {
-                    //   const shallowCopiedItems = [...prevItems];
-                    //   const item = { ...shallowCopiedItems[index], editable: true };
-                    //   shallowCopiedItems[index] = item;
-                    //   return shallowCopiedItems;
-                    // });
-                  }}
-                /> */}
                 <FaTrash
                   onClick={() => {
                     removeItem(id);
