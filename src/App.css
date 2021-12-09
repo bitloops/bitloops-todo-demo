@@ -16,7 +16,7 @@ body {
   margin: 50px auto;
   padding: 16px;
   min-height: 580px;
-  max-width: 300px;
+  max-width: 600px;
   display: table;
   background-color: #f1f5f8;
   background-image: radial-gradient(#bfc0c1 7.2%, transparent 0);
@@ -45,7 +45,7 @@ body {
   margin-top: 40px;
 }
 
-.todolist input {
+.todolistinput {
   border: 0;
   border-bottom: 3px dashed #fdcb6e;
   background-color: transparent;
@@ -89,4 +89,8 @@ body {
   flex-direction: row;
   justify-content: space-between;
   min-width: 60px;
+}
+
+.checkbox {
+  width: 20px;
 }
