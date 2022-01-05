@@ -12,7 +12,7 @@ body {
   text-align: center;
 }
 
-.todolist {
+.todo-list {
   margin: 50px auto;
   padding: 16px;
   min-height: 580px;
@@ -41,11 +41,11 @@ body {
   color: #494a4b;
 }
 
-.todolist form {
+.todo-list form {
   margin-top: 40px;
 }
 
-.todolistinput {
+.todo-list-input {
   border: 0;
   border-bottom: 3px dashed #fdcb6e;
   background-color: transparent;
@@ -56,7 +56,7 @@ body {
   color: #494a4b;
 }
 
-.todolist button {
+.todo-list button {
   margin-top: 30px;
   border: 3px solid hsl(198, 1%, 29%);
   border-radius: 8px;

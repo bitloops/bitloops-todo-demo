@@ -2814,10 +2814,10 @@ bindings@^1.5.0:
   dependencies:
     file-uri-to-path "1.0.0"
 
-bitloops@^0.0.17:
-  version "0.0.17"
-  resolved "https://registry.yarnpkg.com/bitloops/-/bitloops-0.0.17.tgz#7d9b0094b6f7732ccbf09260351e77469a1e1267"
-  integrity sha512-uz42f7Ijab2CvbB8Ld8eKXloFNSDikY4wNyVguY+Ss83dcXN3N+C1WZgSwWEEO3SjpJ/pRyA6ryrxAy+CLER9A==
+bitloops@^0.0.18:
+  version "0.0.18"
+  resolved "https://registry.yarnpkg.com/bitloops/-/bitloops-0.0.18.tgz#49a1f0ef152523b22bd90ec42e3413d1d17889f0"
+  integrity sha512-emBbUAok7tf1a8+QZN64w+VDygqlWwGiq8J+so00V8eymSDVvU7TKZRe7sSuwNjFtSvq8Ot8fPsE4np+qeTG5Q==
   dependencies:
     axios "^0.24.0"
     eventsource "^1.1.0"
