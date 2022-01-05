@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { FaTrash } from 'react-icons/fa';
 import { v4 as uuid } from 'uuid';
-import bitloops, { Todo } from './bitloops';
+import { TodoAppClient } from './bitloops';
 import './App.css';
+import { Todo } from './bitloops/proto/todoApp';
+import bitloopsConfig from './bitloopsConfig';
+
+const todoApp = new TodoAppClient(bitloopsConfig);
 
 type BitloopsEventType = {
   event: string;
@@ -16,7 +20,7 @@ const ViewStates = {
 }
 
 const getBitloopsEventInitialState = (): BitloopsEventType | undefined => undefined;
-const getDataInit = (): [] | { text: string, id: string, status: string }[] => [];
+const getDataInit = (): [] | Todo[] => [];
 
 function App() {
   const [editable, setEditable] = useState('');
@@ -25,14 +29,14 @@ function App() {
   const [bitloopsEvent, setBitloopsEvent] = useState(getBitloopsEventInitialState());
 
   const fetchToDos = async () => {
-    const [response, error] = await bitloops.todoApp.getAll();
+    const [response, error] = await todoApp.getAll();
     if (error) return;
     if (response?.data) setData(response.data);
   };
 
   const addItem = async (e: any) => {
     e.preventDefault();
-    await bitloops.todoApp.create({
+    await todoApp.create({
       status: 'Active',
       text: newValue,
       id: uuid(),
@@ -41,7 +45,7 @@ function App() {
   };
 
   const removeItem = async (id: string) => {
-    await bitloops.todoApp.del(id);
+    await todoApp.delete({id});
   };
 
   const editItem = async (e: any) => {
@@ -51,7 +55,7 @@ function App() {
     for (let i = 0; i < newData.length; i += 1) {
       if (newData[i].id === id) {
         newData[i].text = value;
-        await bitloops.todoApp.update(newData[i]);
+        await todoApp.update(newData[i]);
         break;
       }
     }
@@ -78,16 +82,16 @@ function App() {
     for (let i = 0; i < newData.length; i += 1) {
       if (newData[i].id === id) {
         newData[i].status = checked ? ViewStates.COMPLETED : ViewStates.ACTIVE;
-        await bitloops.todoApp.update(newData[i]);
+        await todoApp.update(newData[i]);
       }
     }
   }
 
   useEffect(() => {
     async function subscribe() {
-      await bitloops.app.subscribe(bitloops.TodoEvents.CREATED, (d) => setBitloopsEvent({ event: bitloops.TodoEvents.CREATED, bitloopsData: d }));
-      await bitloops.app.subscribe(bitloops.TodoEvents.DELETED, (d) => setBitloopsEvent({ event: bitloops.TodoEvents.DELETED, bitloopsData: d }));
-      await bitloops.app.subscribe(bitloops.TodoEvents.UPDATED, (d) => setBitloopsEvent({ event: bitloops.TodoEvents.UPDATED, bitloopsData: d }));
+      await todoApp.subscribe(todoApp.Events.CREATED, (d) => setBitloopsEvent({ event: todoApp.Events.CREATED, bitloopsData: d }));
+      await todoApp.subscribe(todoApp.Events.DELETED, (d) => setBitloopsEvent({ event: todoApp.Events.DELETED, bitloopsData: d }));
+      await todoApp.subscribe(todoApp.Events.UPDATED, (d) => setBitloopsEvent({ event: todoApp.Events.UPDATED, bitloopsData: d }));
     }
     subscribe();
     fetchToDos();
@@ -99,11 +103,11 @@ function App() {
       const updatedArray = JSON.parse(JSON.stringify(data));
 
       switch (event) {
-        case bitloops.TodoEvents.CREATED: 
+        case todoApp.Events.CREATED: 
           updatedArray.push(bitloopsData.newData);
           setData(updatedArray);
           break;
-        case bitloops.TodoEvents.DELETED:
+        case todoApp.Events.DELETED:
           for (let i = 0; i < updatedArray.length; i += 1) {
             if (updatedArray[i].id === bitloopsData.id) {
               updatedArray.splice(i, 1);
@@ -112,7 +116,7 @@ function App() {
           }
           setData(updatedArray);
           break;
-        case bitloops.TodoEvents.UPDATED:
+        case todoApp.Events.UPDATED:
           for (let i = 0; i < updatedArray.length; i += 1) {
             if (updatedArray[i].id === bitloopsData.updatedData.id) {
               updatedArray[i] = bitloopsData.updatedData;

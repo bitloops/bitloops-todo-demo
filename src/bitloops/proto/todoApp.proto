@@ -8,9 +8,9 @@ service TodoApp {
 }
 
 message CreateRequest {
-  string id = 1;
+  optional string id = 1;
   string text = 2;
-  string status = 3;
+  optional string status = 3;
 }
 
 message DeleteRequest {
