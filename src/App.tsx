@@ -1,17 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { FaTrash } from 'react-icons/fa';
 import { v4 as uuid } from 'uuid';
 import { TodoAppClient } from './bitloops';
 import './App.css';
 import { Todo } from './bitloops/proto/todoApp';
 import bitloopsConfig from './bitloopsConfig';
+import TodoPanel from './components/TodoPanel';
 
 const todoApp = new TodoAppClient(bitloopsConfig);
-
-type BitloopsEventType = {
-  event: string;
-  bitloopsData: any;
-}
 
 const ViewStates = {
   ALL: 'All',
@@ -19,7 +14,10 @@ const ViewStates = {
   COMPLETED: 'Completed',
 }
 
-const getBitloopsEventInitialState = (): BitloopsEventType | undefined => undefined;
+const getBitloopsEventInitialState = (): {
+  event: string;
+  bitloopsData: any;
+} | undefined => undefined;
 const getDataInit = (): [] | Todo[] => [];
 
 function App() {
@@ -133,51 +131,18 @@ function App() {
   }, [bitloopsEvent]);
 
   return (
-    <div className="todo-list">
-      <div className="heading">
-        <h1 className="title">Bitloops<br/>To-Do Demo</h1>
-      </div>
-      <input
-        type="text"
-        value={newValue}
-        className='todo-list-input'
-        onChange={(e) => { setNewValue(e.target.value)}}
-      />
-      <button onClick={addItem}>Add</button>
-
-      <div className="items">
-        <ul>
-          {data && data.map(({ text, id, status }) => (
-            <li key={id}>
-              <input className='checkbox' id={id} type="checkbox" checked={status === ViewStates.COMPLETED} onChange={handleCheckbox} />
-              {editable === id ? (
-                <input
-                  type="text"
-                  value={text}
-                  id={id}
-                  className='todo-list-input'
-                  onChange={updateLocalItem}
-                  onKeyPress={(event) => event.key === 'Enter' && editItem(event)}
-                  onBlur={editItem}
-                />
-              ) : (
-                <p id={id} onClick={(e: React.MouseEvent<HTMLElement>) => { 
-                  const target = e.target as HTMLParagraphElement;
-                  setEditable(target.id); 
-                }}>{text}</p>
-              )}
-              <div className="actions">
-                <FaTrash
-                  onClick={() => {
-                    removeItem(id);
-                  }}
-                />
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
+    <TodoPanel 
+      newValue={newValue}
+      setNewValue={setNewValue}
+      addItem={addItem}
+      updateLocalItem={updateLocalItem}
+      editItem={editItem}
+      removeItem={removeItem}
+      editable={editable}
+      setEditable={setEditable}
+      handleCheckbox={handleCheckbox}
+      data={data}
+    />
   );
 }
 
