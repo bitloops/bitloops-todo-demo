@@ -6,8 +6,6 @@ import { Todo } from './bitloops/proto/todoApp';
 import bitloopsConfig from './bitloopsConfig';
 import TodoPanel from './components/TodoPanel';
 
-const todoApp = new TodoAppClient(bitloopsConfig);
-
 const ViewStates = {
   ALL: 'All',
   ACTIVE: 'Active',
@@ -19,8 +17,11 @@ const getBitloopsEventInitialState = (): {
   bitloopsData: any;
 } | undefined => undefined;
 const getDataInit = (): [] | Todo[] => [];
+const getInitialUser = () : any => null;
 
 function App() {
+  const todoApp = new TodoAppClient(bitloopsConfig);
+  const [user, setUser] = useState(getInitialUser());
   const [editable, setEditable] = useState('');
   const [data, setData] = useState(getDataInit());
   const [newValue, setNewValue] = useState('');
@@ -30,6 +31,10 @@ function App() {
     const [response, error] = await todoApp.getAll();
     if (error) return;
     if (response?.data) setData(response.data);
+  };
+
+  const loginWithGoogle = () => {
+    todoApp.bitloopsApp.auth.authenticateWithGoogle();
   };
 
   const addItem = async (e: any) => {
@@ -86,13 +91,24 @@ function App() {
   }
 
   useEffect(() => {
+    console.log('Setting up onAuthStateChange');
+    todoApp.bitloopsApp.auth.onAuthStateChange((user: any) => {
+      console.log('received on auth change event');
+      if (user) {
+        console.log('user', user);
+        setUser(user);
+      } else {
+        console.log('user is null', user);
+      }
+    });
     async function subscribe() {
-      await todoApp.subscribe(todoApp.Events.CREATED, (d) => setBitloopsEvent({ event: todoApp.Events.CREATED, bitloopsData: d }));
       await todoApp.subscribe(todoApp.Events.DELETED, (d) => setBitloopsEvent({ event: todoApp.Events.DELETED, bitloopsData: d }));
+      await todoApp.subscribe(todoApp.Events.CREATED, (d) => setBitloopsEvent({ event: todoApp.Events.CREATED, bitloopsData: d }));
       await todoApp.subscribe(todoApp.Events.UPDATED, (d) => setBitloopsEvent({ event: todoApp.Events.UPDATED, bitloopsData: d }));
+      fetchToDos();
     }
     subscribe();
-    fetchToDos();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -131,18 +147,21 @@ function App() {
   }, [bitloopsEvent]);
 
   return (
-    <TodoPanel 
-      newValue={newValue}
-      setNewValue={setNewValue}
-      addItem={addItem}
-      updateLocalItem={updateLocalItem}
-      editItem={editItem}
-      removeItem={removeItem}
-      editable={editable}
-      setEditable={setEditable}
-      handleCheckbox={handleCheckbox}
-      data={data}
-    />
+    <>
+      <TodoPanel 
+        newValue={newValue}
+        setNewValue={setNewValue}
+        addItem={addItem}
+        updateLocalItem={updateLocalItem}
+        editItem={editItem}
+        removeItem={removeItem}
+        editable={editable}
+        setEditable={setEditable}
+        handleCheckbox={handleCheckbox}
+        data={data}
+      />
+      {user ? <div>{JSON.stringify(user)}</div> : <button onClick={loginWithGoogle}>Login with Google</button>}
+    </>
   );
 }
 

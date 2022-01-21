@@ -1,4 +1,4 @@
-import Bitloops, { AuthTypes } from 'bitloops';
+import Bitloops from 'bitloops';
 
 import type { UpdateResponse } from './proto/todoApp';
 import type { UpdateRequest } from './proto/todoApp';
@@ -33,10 +33,6 @@ export class TodoAppClient implements ITodoAppClient {
   Events: { CREATED: string, DELETED: string, UPDATED: string };
   constructor(bitloopsConfig: any) {
     this.bitloopsApp = Bitloops.initialize(bitloopsConfig);
-    this.bitloopsApp.authenticate({
-      authenticationType: AuthTypes.Anonymous, // change this
-      token: '',
-    });
     this.Events = {
       CREATED: 'workflow-events.ToDos.created',
       DELETED: 'workflow-events.ToDos.deleted',
