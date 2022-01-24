@@ -17,7 +17,10 @@ const getBitloopsEventInitialState = (): {
   bitloopsData: any;
 } | undefined => undefined;
 const getDataInit = (): [] | Todo[] => [];
-const getInitialUser = () : any => null;
+const getInitialUser = () : any | null => {
+  const bitloopsAuthUserDataString = localStorage.getItem('bitloops.auth.userData');
+  return bitloopsAuthUserDataString ? JSON.parse(bitloopsAuthUserDataString) : null;
+};
 
 function App() {
   const todoApp = new TodoAppClient(bitloopsConfig);
@@ -35,6 +38,10 @@ function App() {
 
   const loginWithGoogle = () => {
     todoApp.bitloopsApp.auth.authenticateWithGoogle();
+  };
+
+  const clearAuth = () => {
+    todoApp.bitloopsApp.auth.clearAuthentication();
   };
 
   const addItem = async (e: any) => {
@@ -93,17 +100,12 @@ function App() {
   useEffect(() => {
     console.log('Setting up onAuthStateChange');
     todoApp.bitloopsApp.auth.onAuthStateChange((user: any) => {
-      console.log('received on auth change event');
-      if (user) {
-        console.log('user', user);
-        setUser(user);
-      } else {
-        console.log('user is null', user);
-      }
+      console.log('received auth event', user);
+      setUser(user);
     });
     async function subscribe() {
-      await todoApp.subscribe(todoApp.Events.DELETED, (d) => setBitloopsEvent({ event: todoApp.Events.DELETED, bitloopsData: d }));
       await todoApp.subscribe(todoApp.Events.CREATED, (d) => setBitloopsEvent({ event: todoApp.Events.CREATED, bitloopsData: d }));
+      await todoApp.subscribe(todoApp.Events.DELETED, (d) => setBitloopsEvent({ event: todoApp.Events.DELETED, bitloopsData: d }));
       await todoApp.subscribe(todoApp.Events.UPDATED, (d) => setBitloopsEvent({ event: todoApp.Events.UPDATED, bitloopsData: d }));
       fetchToDos();
     }
@@ -160,7 +162,8 @@ function App() {
         handleCheckbox={handleCheckbox}
         data={data}
       />
-      {user ? <div>{JSON.stringify(user)}</div> : <button onClick={loginWithGoogle}>Login with Google</button>}
+      {user && <div>Hello {user.firstName}</div>}
+      {user ? <button onClick={clearAuth}>Logout</button> : <button onClick={loginWithGoogle}>Login with Google</button>}
     </>
   );
 }
