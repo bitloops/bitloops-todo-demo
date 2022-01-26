@@ -98,9 +98,7 @@ function App() {
   }
 
   useEffect(() => {
-    console.log('Setting up onAuthStateChange');
     todoApp.bitloopsApp.auth.onAuthStateChange((user: any) => {
-      console.log('received auth event', user);
       setUser(user);
     });
     async function subscribe() {

@@ -1,4 +1,4 @@
-import Bitloops from 'bitloops';
+import Bitloops, { BitloopsConfig } from 'bitloops';
 
 import type { UpdateResponse } from './proto/todoApp';
 import type { UpdateRequest } from './proto/todoApp';
@@ -31,7 +31,7 @@ export interface ITodoAppClient {
 export class TodoAppClient implements ITodoAppClient {
   bitloopsApp: Bitloops;
   Events: { CREATED: string, DELETED: string, UPDATED: string };
-  constructor(bitloopsConfig: any) {
+  constructor(bitloopsConfig: BitloopsConfig) {
     this.bitloopsApp = Bitloops.initialize(bitloopsConfig);
     this.Events = {
       CREATED: 'workflow-events.ToDos.created',
