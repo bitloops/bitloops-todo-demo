@@ -44,7 +44,7 @@ function App() {
     todoApp.bitloopsApp.auth.clearAuthentication();
   };
 
-  const addItem = async (e: any) => {
+  const addItem = async (e: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLInputElement>) => {
     e.preventDefault();
     await todoApp.create({
       status: 'Active',

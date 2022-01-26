@@ -16,7 +16,7 @@ interface TodoProps {
   setNewValue: React.Dispatch<React.SetStateAction<string>>,
   setEditable: React.Dispatch<React.SetStateAction<string>>,
   data: Todo[] | [],
-  addItem: (e: React.MouseEvent<HTMLElement>) => void,
+  addItem: (e: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLInputElement>) => void,
   updateLocalItem: (d: any) => void,
   editItem: (e: any) => void,
   removeItem: (id: string) => void,
@@ -50,6 +50,9 @@ export const TodoPanel: FC<TodoProps> = (props) => {
     value={newValue}
     className='todo-list-input'
     onChange={(e) => { setNewValue(e.target.value)}}
+    onKeyPress={(e) => { 
+      if (e.key === 'Enter') addItem(e); 
+    }}
   />
   <button onClick={addItem}>Add</button>
 
