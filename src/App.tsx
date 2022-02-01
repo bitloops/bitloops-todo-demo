@@ -5,6 +5,8 @@ import './App.css';
 import { Todo } from './bitloops/proto/todoApp';
 import bitloopsConfig from './bitloopsConfig';
 import TodoPanel from './components/TodoPanel';
+import GoogleButton from './components/GoogleButton';
+import Header from './components/Header';
 
 const ViewStates = {
   ALL: 'All',
@@ -29,7 +31,6 @@ function App() {
   const [data, setData] = useState(getDataInit());
   const [newValue, setNewValue] = useState('');
   const [bitloopsEvent, setBitloopsEvent] = useState(getBitloopsEventInitialState());
-
   const fetchToDos = async () => {
     const [response, error] = await todoApp.getAll();
     if (error) return;
@@ -148,6 +149,7 @@ function App() {
 
   return (
     <>
+      <Header user={user} logout={clearAuth}/>
       <TodoPanel 
         newValue={newValue}
         setNewValue={setNewValue}
@@ -160,8 +162,7 @@ function App() {
         handleCheckbox={handleCheckbox}
         data={data}
       />
-      {user && <div>Hello {user.firstName}</div>}
-      {user ? <button onClick={clearAuth}>Logout</button> : <button onClick={loginWithGoogle}>Login with Google</button>}
+      {!user && <GoogleButton loginWithGoogle={loginWithGoogle}/>}
     </>
   );
 }
