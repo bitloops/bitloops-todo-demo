@@ -1,6 +1,6 @@
 import Bitloops, { BitloopsConfig } from 'bitloops';
 
-import type { UpdateResponse } from './proto/todoApp';
+import type { CreateMineRequest, CreateMineResponse, DeleteMineRequest, DeleteMineResponse, GetMineResponse, UpdateMineRequest, UpdateMineResponse, UpdateResponse } from './proto/todoApp';
 import type { UpdateRequest } from './proto/todoApp';
 import type { GetAllResponse } from './proto/todoApp';
 import type { GetAllRequest } from './proto/todoApp';
@@ -30,13 +30,16 @@ export interface ITodoAppClient {
 
 export class TodoAppClient implements ITodoAppClient {
   bitloopsApp: Bitloops;
-  Events: { CREATED: string, DELETED: string, UPDATED: string };
-  constructor(bitloopsConfig: BitloopsConfig) {
+  Events: { CREATED: string, DELETED: string, UPDATED: string, CREATEDMINE: string, DELETEDMINE: string, UPDATEDMINE: string };
+  constructor(bitloopsConfig: any) {
     this.bitloopsApp = Bitloops.initialize(bitloopsConfig);
     this.Events = {
       CREATED: 'workflow-events.ToDos.created',
       DELETED: 'workflow-events.ToDos.deleted',
       UPDATED: 'workflow-events.ToDos.updated',
+      CREATEDMINE: 'workflow-events.ToDos.created',
+      DELETEDMINE: 'workflow-events.ToDos.deleted',
+      UPDATEDMINE: 'workflow-events.ToDos.updated',
     }
   }
   async subscribe(namedEvent: string, callback: (data: any) => void): Promise<void> {
@@ -105,4 +108,68 @@ export class TodoAppClient implements ITodoAppClient {
       return [null, error];
     }
   }
+
+    /**
+   * @generated from Bitloops Protobuf: Create(CreateMineRequest) returns (CreateMineResponse);
+   */
+     async createMine(input: CreateMineRequest): Promise<[response: CreateMineResponse | null, error: any | null]> {
+      try {
+        const response: CreateMineResponse = await this.bitloopsApp.request(
+          '88e761bf-4824-4974-96b4-45c7bf741f11',
+          'e3bea2d3-4383-4522-b473-1cb555edf695',
+          input,
+        );
+        return [response, null];
+      } catch (error) {
+        console.error(error);
+        return [null, error];
+      }
+    }
+    /**
+     * @generated from Bitloops Protobuf: Delete(DeleteMineRequest) returns (DeleteMineResponse);
+     */
+    async deleteMine(input: DeleteMineRequest): Promise<[response: DeleteMineResponse | null, error: any | null]> {
+      try {
+        const response: DeleteMineResponse = await this.bitloopsApp.request(
+          '88e761bf-4824-4974-96b4-45c7bf741f11',
+          '31a588b5-4b03-40d3-91c4-332d1b2c7bf7',
+          input,
+        );
+        return [response, null];
+      } catch (error) {
+        console.error(error);
+        return [null, error];
+      }
+    }
+    /**
+     * @generated from Bitloops Protobuf: GetAll(GetMineRequest) returns (GetMineResponse);
+     */
+    async getMine(): Promise<[response: GetMineResponse | null, error: any | null]> {
+      try {
+        const response: GetMineResponse = await this.bitloopsApp.request(
+          '88e761bf-4824-4974-96b4-45c7bf741f11',
+          '177dce51-c138-411e-bd9c-302f421ad059'
+        );
+        return [response, null];
+      } catch (error) {
+        console.error(error);
+        return [null, error];
+      }
+    }
+    /**
+     * @generated from Bitloops Protobuf: Update(UpdateRequest) returns (UpdateResponse);
+     */
+    async updateMine(input: UpdateMineRequest): Promise<[response: UpdateMineResponse | null, error: any | null]> {
+      try {
+        const response: UpdateMineResponse = await this.bitloopsApp.request(
+          '88e761bf-4824-4974-96b4-45c7bf741f11',
+          'bb90a5fb-d9aa-4880-81a5-a013c24d8c05',
+          input,
+        );
+        return [response, null];
+      } catch (error) {
+        console.error(error);
+        return [null, error];
+      }
+    }
 }

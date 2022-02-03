@@ -44,3 +44,12 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+
+## How to link with node-bitloops
+In node-bitloops:  
+    `npm build`
+    `npm link`
+In the app(todo-demo):
+    `npm link bitloops`
+Add bitloopsConfig with correct keycloak credentials

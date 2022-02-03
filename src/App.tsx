@@ -32,6 +32,8 @@ function App() {
   const [newValue, setNewValue] = useState('');
   const [bitloopsEvent, setBitloopsEvent] = useState(getBitloopsEventInitialState());
   const fetchToDos = async () => {
+    console.log('userdata', localStorage.getItem('bitloops.auth.userData'));
+
     const [response, error] = await todoApp.getAll();
     if (error) return;
     if (response?.data) setData(response.data);
