@@ -40,25 +40,19 @@ function App() {
 
   ///TODO subscribe 
   async function subscribePublic() {
-    console.log('subscribepublic')
-    const createUnSub = await todoApp.subscribe(todoApp.Events.created(), (d) => {
-          const eventRes = setBitloopsEvent({ event: todoApp.Events.created(), bitloopsData: d });
-    });
+    const createUnSub = await todoApp.subscribe(todoApp.Events.created(), (d) => setBitloopsEvent({ event: todoApp.Events.created(), bitloopsData: d }));
     const deleteUnSub = await todoApp.subscribe(todoApp.Events.deleted(), (d) => setBitloopsEvent({ event: todoApp.Events.deleted(), bitloopsData: d }));
     const updateUnSub = await todoApp.subscribe(todoApp.Events.updated(), (d) => setBitloopsEvent({ event: todoApp.Events.updated(), bitloopsData: d }));
     publicUnSubscriptions.push(createUnSub, updateUnSub, deleteUnSub);
-    console.log('subscribepublic fetch')
     fetchToDos();
   }
 
   async function subscribeMine() {
-    console.log('subscribeMine user', user)
     const { uid } = user;
     const myCreatedUnSub = await todoApp.subscribe(todoApp.Events.myCreated(uid), (d) => setBitloopsEvent({ event: todoApp.Events.myCreated(uid), bitloopsData: d }));
     const myDeletedUnSub = await todoApp.subscribe(todoApp.Events.myDeleted(uid), (d) => setBitloopsEvent({ event: todoApp.Events.myDeleted(uid), bitloopsData: d }));
     const myUpdatedUnSub = await todoApp.subscribe(todoApp.Events.myUpdated(uid), (d) => setBitloopsEvent({ event: todoApp.Events.myUpdated(uid), bitloopsData: d }));
     privateUnSubscriptions.push(myCreatedUnSub, myDeletedUnSub, myUpdatedUnSub);
-    console.log('subscribeprivate fetch')
     fetchToDos();
   }
 
@@ -94,7 +88,6 @@ function App() {
   const addItem = async (e: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLInputElement>) => {
     e.preventDefault();
     if(user){
-      console.log('create minne', newValue)
       await todoApp.createMine({
         status: 'Active',
         text: newValue,
@@ -169,12 +162,6 @@ function App() {
       console.log('auth change')
       setUser(user);
     });
-    // console.log('user', user)
-    // if (user){
-    //   subscribeMine();
-    // }else {
-    //   subscribePublic();
-    // }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
