@@ -3,7 +3,7 @@
 // tslint:disable
 import type { RpcTransport } from "@protobuf-ts/runtime-rpc";
 import type { ServiceInfo } from "@protobuf-ts/runtime-rpc";
-import { TodoApp } from "./todoApp";
+import { CreateMineRequest, CreateMineResponse, DeleteMineRequest, DeleteMineResponse, GetMineRequest, GetMineResponse, TodoApp, UpdateMineRequest, UpdateMineResponse } from "./todoApp";
 import type { UpdateResponse } from "./todoApp";
 import type { UpdateRequest } from "./todoApp";
 import type { GetAllResponse } from "./todoApp";
@@ -35,6 +35,22 @@ export interface ITodoAppClient {
      * @generated from protobuf rpc: Update(UpdateRequest) returns (UpdateResponse);
      */
     update(input: UpdateRequest, options?: RpcOptions): UnaryCall<UpdateRequest, UpdateResponse>;
+    /**
+     * @generated from protobuf rpc: Create(CreateRequest) returns (CreateResponse);
+     */
+    createMine(input: CreateMineRequest, options?: RpcOptions): UnaryCall<CreateMineRequest, CreateMineResponse>;
+    /**
+    * @generated from protobuf rpc: Delete(DeleteRequest) returns (DeleteResponse);
+    */
+    deleteMine(input: DeleteMineRequest, options?: RpcOptions): UnaryCall<DeleteMineRequest, DeleteMineResponse>;
+    /**
+    * @generated from protobuf rpc: GetAll(GetAllRequest) returns (GetAllResponse);
+    */
+    getMine(input: GetMineRequest, options?: RpcOptions): UnaryCall<GetMineRequest, GetMineResponse>;
+    /**
+    * @generated from protobuf rpc: Update(UpdateRequest) returns (UpdateResponse);
+    */
+    updateMine(input: UpdateMineRequest, options?: RpcOptions): UnaryCall<UpdateMineRequest, UpdateMineResponse>;
 }
 /**
  * @generated from protobuf service TodoApp
@@ -72,5 +88,33 @@ export class TodoAppClient implements ITodoAppClient, ServiceInfo {
     update(input: UpdateRequest, options?: RpcOptions): UnaryCall<UpdateRequest, UpdateResponse> {
         const method = this.methods[3], opt = this._transport.mergeOptions(options);
         return stackIntercept<UpdateRequest, UpdateResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: Create(CreateRequest) returns (CreateResponse);
+     */
+    createMine(input: CreateMineRequest, options?: RpcOptions): UnaryCall<CreateMineRequest, CreateMineResponse> {
+    const method = this.methods[0], opt = this._transport.mergeOptions(options);
+    return stackIntercept<CreateMineRequest, CreateMineResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: Delete(DeleteRequest) returns (DeleteResponse);
+     */
+    deleteMine(input: DeleteMineRequest, options?: RpcOptions): UnaryCall<DeleteMineRequest, DeleteMineResponse> {
+        const method = this.methods[1], opt = this._transport.mergeOptions(options);
+        return stackIntercept<DeleteMineRequest, DeleteMineResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: GetAll(GetAllRequest) returns (GetAllResponse);
+     */
+    getMine(input: GetMineRequest, options?: RpcOptions): UnaryCall<GetMineRequest, GetMineResponse> {
+        const method = this.methods[2], opt = this._transport.mergeOptions(options);
+        return stackIntercept<GetMineRequest, GetMineResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: Update(UpdateRequest) returns (UpdateResponse);
+     */
+    updateMine(input: UpdateMineRequest, options?: RpcOptions): UnaryCall<UpdateMineRequest, UpdateMineResponse> {
+        const method = this.methods[3], opt = this._transport.mergeOptions(options);
+        return stackIntercept<UpdateMineRequest, UpdateMineResponse>("unary", this._transport, method, opt, input);
     }
 }
