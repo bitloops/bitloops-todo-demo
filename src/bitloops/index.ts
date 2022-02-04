@@ -30,20 +30,27 @@ export interface ITodoAppClient {
 
 export class TodoAppClient implements ITodoAppClient {
   bitloopsApp: Bitloops;
-  Events: { CREATED: string, DELETED: string, UPDATED: string, CREATEDMINE: string, DELETEDMINE: string, UPDATEDMINE: string };
+  Events: { 
+    created: () => string, 
+    deleted: () => string, 
+    updated: () => string, 
+    myCreated: (uid:string) => string, 
+    myUpdated: (uid:string) => string, 
+    myDeleted: (uid:string) => string
+  };
   constructor(bitloopsConfig: any) {
     this.bitloopsApp = Bitloops.initialize(bitloopsConfig);
     this.Events = {
-      CREATED: 'workflow-events.ToDos.created',
-      DELETED: 'workflow-events.ToDos.deleted',
-      UPDATED: 'workflow-events.ToDos.updated',
-      CREATEDMINE: 'workflow-events.ToDos.created',
-      DELETEDMINE: 'workflow-events.ToDos.deleted',
-      UPDATEDMINE: 'workflow-events.ToDos.updated',
+      created: () => 'workflow-events.ToDos.created',
+      deleted: () => 'workflow-events.ToDos.deleted',
+      updated: () => 'workflow-events.ToDos.updated',
+      myCreated: (uid: string) =>  `workflow-events.ToDos.created.${uid}`,
+      myDeleted: (uid: string) => `workflow-events.ToDos.deleted.${uid}`,
+      myUpdated: (uid: string) => `workflow-events.ToDos.updated.${uid}`,
     }
   }
-  async subscribe(namedEvent: string, callback: (data: any) => void): Promise<void> {
-    await this.bitloopsApp.subscribe(namedEvent, callback);
+  async subscribe(namedEvent: string, callback: (data: any) => void) {
+    return this.bitloopsApp.subscribe(namedEvent, callback);
   }
   /**
    * @generated from Bitloops Protobuf: Create(CreateRequest) returns (CreateResponse);
@@ -116,7 +123,7 @@ export class TodoAppClient implements ITodoAppClient {
       try {
         const response: CreateMineResponse = await this.bitloopsApp.request(
           '88e761bf-4824-4974-96b4-45c7bf741f11',
-          'e3bea2d3-4383-4522-b473-1cb555edf695',
+          '1761f542-9c8e-41ea-8ce1-b2dd3a93d797',
           input,
         );
         return [response, null];
@@ -132,7 +139,7 @@ export class TodoAppClient implements ITodoAppClient {
       try {
         const response: DeleteMineResponse = await this.bitloopsApp.request(
           '88e761bf-4824-4974-96b4-45c7bf741f11',
-          '31a588b5-4b03-40d3-91c4-332d1b2c7bf7',
+          '5a479114-4624-4455-83de-ab843a19567b',
           input,
         );
         return [response, null];
@@ -148,7 +155,7 @@ export class TodoAppClient implements ITodoAppClient {
       try {
         const response: GetMineResponse = await this.bitloopsApp.request(
           '88e761bf-4824-4974-96b4-45c7bf741f11',
-          '177dce51-c138-411e-bd9c-302f421ad059'
+          'c8cf52b6-6b74-44e9-a735-01eba8d2cf8e'
         );
         return [response, null];
       } catch (error) {
@@ -163,7 +170,7 @@ export class TodoAppClient implements ITodoAppClient {
       try {
         const response: UpdateMineResponse = await this.bitloopsApp.request(
           '88e761bf-4824-4974-96b4-45c7bf741f11',
-          'bb90a5fb-d9aa-4880-81a5-a013c24d8c05',
+          '03130b74-77ee-4489-9038-65f922082afc',
           input,
         );
         return [response, null];
