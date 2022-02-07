@@ -71,7 +71,6 @@ function App() {
   }
 
   const fetchToDos = async () => {
-    console.log('fetch')
     const [response, error] = user ? await todoApp.getMine() : await todoApp.getAll();
     if (error) return;
     if (response?.data) setData(response.data);
@@ -94,7 +93,6 @@ function App() {
         id: uuid(),
       });
     }else {
-      console.log('create public')
       await todoApp.create({
         status: 'Active',
         text: newValue,
@@ -159,14 +157,12 @@ function App() {
   ///TODO add here the user events
   useEffect(() => {
     todoApp.bitloopsApp.auth.onAuthStateChange((user: any) => {
-      console.log('auth change')
       setUser(user);
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    console.log('fetch user')
     if(user){
       subscribeMine()
       unsubscribePublic()
@@ -182,7 +178,6 @@ function App() {
       const { bitloopsData, event } = bitloopsEvent;
       const updatedArray = JSON.parse(JSON.stringify(data));
 
-      console.log('event', event)
       const uid = user?.uid;
       switch (event) {
         case todoApp.Events.created(): 
