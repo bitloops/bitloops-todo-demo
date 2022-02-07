@@ -1,0 +1,13 @@
+{
+	"editor.defaultFormatter": "dbaeumer.vscode-eslint",
+	"editor.formatOnSave": false,
+	"prettier.eslintIntegration": true,
+	"prettier.singleQuote": true,
+	"eslint.alwaysShowStatus": true,
+	"editor.codeActionsOnSave": {
+	"source.fixAll.eslint": true,
+  },
+  "cSpell.words": [
+    "Unsubscriptions"
+  ]
+}

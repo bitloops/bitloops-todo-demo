@@ -25,8 +25,8 @@ const getInitialUser = () : any | null => {
   return bitloopsAuthUserDataString ? JSON.parse(bitloopsAuthUserDataString) : null;
 };
 
-const publicUnSubscriptions: Unsubscribe[] = [];
-const privateUnSubscriptions: Unsubscribe[] = [];
+const publicUnsubscriptions: Unsubscribe[] = [];
+const privateUnsubscriptions: Unsubscribe[] = [];
 
 
 function App() {
@@ -37,45 +37,6 @@ function App() {
   const [newValue, setNewValue] = useState('');
   const [bitloopsEvent, setBitloopsEvent] = useState(getBitloopsEventInitialState());
 
-
-  ///TODO subscribe 
-  async function subscribePublic() {
-    const createUnSub = await todoApp.subscribe(todoApp.Events.created(), (d) => setBitloopsEvent({ event: todoApp.Events.created(), bitloopsData: d }));
-    const deleteUnSub = await todoApp.subscribe(todoApp.Events.deleted(), (d) => setBitloopsEvent({ event: todoApp.Events.deleted(), bitloopsData: d }));
-    const updateUnSub = await todoApp.subscribe(todoApp.Events.updated(), (d) => setBitloopsEvent({ event: todoApp.Events.updated(), bitloopsData: d }));
-    publicUnSubscriptions.push(createUnSub, updateUnSub, deleteUnSub);
-    fetchToDos();
-  }
-
-  async function subscribeMine() {
-    const { uid } = user;
-    const myCreatedUnSub = await todoApp.subscribe(todoApp.Events.myCreated(uid), (d) => setBitloopsEvent({ event: todoApp.Events.myCreated(uid), bitloopsData: d }));
-    const myDeletedUnSub = await todoApp.subscribe(todoApp.Events.myDeleted(uid), (d) => setBitloopsEvent({ event: todoApp.Events.myDeleted(uid), bitloopsData: d }));
-    const myUpdatedUnSub = await todoApp.subscribe(todoApp.Events.myUpdated(uid), (d) => setBitloopsEvent({ event: todoApp.Events.myUpdated(uid), bitloopsData: d }));
-    privateUnSubscriptions.push(myCreatedUnSub, myDeletedUnSub, myUpdatedUnSub);
-    fetchToDos();
-  }
-
-  async function unsubscribePublic() {
-    for (const unsubscribe of publicUnSubscriptions) {
-      unsubscribe();
-    }
-    publicUnSubscriptions.length = 0;
-  }
-  
-  async function unsubscribeMine() {
-    for(const unSubscribeMine of privateUnSubscriptions){
-      unSubscribeMine();
-    }
-    privateUnSubscriptions.length = 0; //TODO check pop
-  }
-
-  const fetchToDos = async () => {
-    const [response, error] = user ? await todoApp.getMine() : await todoApp.getAll();
-    if (error) return;
-    if (response?.data) setData(response.data);
-  };
-
   const loginWithGoogle = () => {
     todoApp.bitloopsApp.auth.authenticateWithGoogle();
   };
@@ -84,15 +45,52 @@ function App() {
     todoApp.bitloopsApp.auth.clearAuthentication();
   };
 
+  async function subscribePublic() {
+    const createUnsubscribe = await todoApp.subscribe(todoApp.Events.created(), (d) => setBitloopsEvent({ event: todoApp.Events.created(), bitloopsData: d }));
+    const deleteUnsubscribe = await todoApp.subscribe(todoApp.Events.deleted(), (d) => setBitloopsEvent({ event: todoApp.Events.deleted(), bitloopsData: d }));
+    const updateUnsubscribe = await todoApp.subscribe(todoApp.Events.updated(), (d) => setBitloopsEvent({ event: todoApp.Events.updated(), bitloopsData: d }));
+    publicUnsubscriptions.push(createUnsubscribe, updateUnsubscribe, deleteUnsubscribe);
+    fetchToDos();
+  }
+
+  async function subscribeMine() {
+    const { uid } = user;
+    const myCreatedUnsubscribe = await todoApp.subscribe(todoApp.Events.myCreated(uid), (d) => setBitloopsEvent({ event: todoApp.Events.myCreated(uid), bitloopsData: d }));
+    const myDeletedUnsubscribe = await todoApp.subscribe(todoApp.Events.myDeleted(uid), (d) => setBitloopsEvent({ event: todoApp.Events.myDeleted(uid), bitloopsData: d }));
+    const myUpdatedUnsubscribe = await todoApp.subscribe(todoApp.Events.myUpdated(uid), (d) => setBitloopsEvent({ event: todoApp.Events.myUpdated(uid), bitloopsData: d }));
+    privateUnsubscriptions.push(myCreatedUnsubscribe, myDeletedUnsubscribe, myUpdatedUnsubscribe);
+    fetchToDos();
+  }
+
+  async function unsubscribePublic() {
+    for (const unsubscribe of publicUnsubscriptions) {
+      unsubscribe();
+    }
+    publicUnsubscriptions.length = 0;
+  }
+  
+  async function unsubscribeMine() {
+    for(const unSubscribeMine of privateUnsubscriptions) {
+      unSubscribeMine();
+    }
+    privateUnsubscriptions.length = 0;
+  }
+
+  const fetchToDos = async () => {
+    const [response, error] = user ? await todoApp.getMine() : await todoApp.getAll();
+    if (error) return;
+    if (response?.data) setData(response.data);
+  };
+
   const addItem = async (e: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLInputElement>) => {
     e.preventDefault();
-    if(user){
+    if (user) {
       await todoApp.createMine({
         status: 'Active',
         text: newValue,
         id: uuid(),
       });
-    }else {
+    } else {
       await todoApp.create({
         status: 'Active',
         text: newValue,
@@ -104,9 +102,9 @@ function App() {
   };
 
   const removeItem = async (id: string) => {
-    if(user){
+    if (user) {
       await todoApp.deleteMine({id});
-    }else{
+    } else{
       await todoApp.delete({id});
     }
   };
@@ -118,9 +116,9 @@ function App() {
     for (let i = 0; i < newData.length; i += 1) {
       if (newData[i].id === id) {
         newData[i].text = value;
-        if(user){
+        if (user) {
           await todoApp.updateMine(newData[i]);
-        }else{
+        } else {
           await todoApp.update(newData[i]);
         }
         break;
@@ -149,12 +147,19 @@ function App() {
     for (let i = 0; i < newData.length; i += 1) {
       if (newData[i].id === id) {
         newData[i].status = checked ? ViewStates.COMPLETED : ViewStates.ACTIVE;
-        await todoApp.update(newData[i]);
+        if (user) {
+          await todoApp.updateMine(newData[i]);
+        } else {
+          await todoApp.update(newData[i]);
+        }
       }
     }
   }
 
-  ///TODO add here the user events
+  /**
+   * Upon initialization set onAuthStateChange in order
+   * to keep track of auth state locally
+   */
   useEffect(() => {
     todoApp.bitloopsApp.auth.onAuthStateChange((user: any) => {
       setUser(user);
@@ -162,17 +167,25 @@ function App() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /**
+   * If user exists then unsubscribe public
+   * subscriptions and subscribe to mine and 
+   * vice versa
+   */
   useEffect(() => {
-    if(user){
-      subscribeMine()
-      unsubscribePublic()
-    }else{
-      subscribePublic()
-      unsubscribeMine()
+    if (user) {
+      subscribeMine();
+      unsubscribePublic();
+    } else {
+      subscribePublic();
+      unsubscribeMine();
     }
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
 
+  /**
+   * Handle each event received appropriately
+   */
   useEffect(() => {
     if (bitloopsEvent) {
       const { bitloopsData, event } = bitloopsEvent;
