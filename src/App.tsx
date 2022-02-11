@@ -1,5 +1,9 @@
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable import/no-named-as-default */
 import React, { useState, useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
+import { Unsubscribe } from 'bitloops/dist/definitions';
 import { TodoAppClient } from './bitloops';
 import './App.css';
 import { Todo } from './bitloops/proto/todoApp';
@@ -7,13 +11,12 @@ import bitloopsConfig from './bitloopsConfig';
 import TodoPanel from './components/TodoPanel';
 import GoogleButton from './components/GoogleButton';
 import Header from './components/Header';
-import { Unsubscribe } from 'bitloops/dist/definitions';
 
 const ViewStates = {
   ALL: 'All',
   ACTIVE: 'Active',
   COMPLETED: 'Completed',
-}
+};
 
 const getBitloopsEventInitialState = (): {
   event: string;
@@ -27,7 +30,6 @@ const getInitialUser = () : any | null => {
 
 const publicUnsubscriptions: Unsubscribe[] = [];
 const privateUnsubscriptions: Unsubscribe[] = [];
-
 
 function App() {
   const todoApp = new TodoAppClient(bitloopsConfig);
@@ -43,6 +45,12 @@ function App() {
 
   const clearAuth = () => {
     todoApp.bitloopsApp.auth.clearAuthentication();
+  };
+
+  const fetchToDos = async () => {
+    const [response, error] = user ? await todoApp.getMine() : await todoApp.getAll();
+    if (error) return;
+    if (response?.data) setData(response.data);
   };
 
   async function subscribePublic() {
@@ -68,19 +76,15 @@ function App() {
     }
     publicUnsubscriptions.length = 0;
   }
-  
+
   async function unsubscribeMine() {
-    for(const unSubscribeMine of privateUnsubscriptions) {
+    for (const unSubscribeMine of privateUnsubscriptions) {
       unSubscribeMine();
     }
     privateUnsubscriptions.length = 0;
   }
 
-  const fetchToDos = async () => {
-    const [response, error] = user ? await todoApp.getMine() : await todoApp.getAll();
-    if (error) return;
-    if (response?.data) setData(response.data);
-  };
+
 
   const addItem = async (e: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -97,21 +101,21 @@ function App() {
         id: uuid(),
       });
     }
-  
+
     setNewValue('');
   };
 
   const removeItem = async (id: string) => {
     if (user) {
-      await todoApp.deleteMine({id});
-    } else{
-      await todoApp.delete({id});
+      await todoApp.deleteMine({ id });
+    } else {
+      await todoApp.delete({ id });
     }
   };
 
   const editItem = async (e: any) => {
-    const id = e.target.id;
-    const value = e.target.value;
+    const { id } = e.target;
+    const { value } = e.target;
     const newData: Todo[] = JSON.parse(JSON.stringify(data));
     for (let i = 0; i < newData.length; i += 1) {
       if (newData[i].id === id) {
@@ -125,11 +129,11 @@ function App() {
       }
     }
     setEditable('');
-  }
+  };
 
   const updateLocalItem = (e: any) => {
-    const id = e.target.id;
-    const value = e.target.value;
+    const { id } = e.target;
+    const { value } = e.target;
     const newData: Todo[] = JSON.parse(JSON.stringify(data));
     for (let i = 0; i < newData.length; i += 1) {
       if (newData[i].id === id) {
@@ -138,11 +142,11 @@ function App() {
         break;
       }
     }
-  }
+  };
 
   const handleCheckbox = async (e: any) => {
-    const id = e.target.id;
-    const checked = e.target.checked;
+    const { id } = e.target;
+    const { checked } = e.target;
     const newData: Todo[] = JSON.parse(JSON.stringify(data));
     for (let i = 0; i < newData.length; i += 1) {
       if (newData[i].id === id) {
@@ -154,22 +158,22 @@ function App() {
         }
       }
     }
-  }
+  };
 
   /**
    * Upon initialization set onAuthStateChange in order
    * to keep track of auth state locally
    */
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-shadow
     todoApp.bitloopsApp.auth.onAuthStateChange((user: any) => {
       setUser(user);
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /**
    * If user exists then unsubscribe public
-   * subscriptions and subscribe to mine and 
+   * subscriptions and subscribe to mine and
    * vice versa
    */
   useEffect(() => {
@@ -180,8 +184,7 @@ function App() {
       subscribePublic();
       unsubscribeMine();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user])
+  }, [user]);
 
   /**
    * Handle each event received appropriately
@@ -193,13 +196,13 @@ function App() {
 
       const uid = user?.uid;
       switch (event) {
-        case todoApp.Events.created(): 
-        case todoApp.Events.myCreated(uid): 
+        case todoApp.Events.created():
+        case todoApp.Events.myCreated(uid):
           updatedArray.push(bitloopsData.newData);
           setData(updatedArray);
           break;
         case todoApp.Events.deleted():
-        case todoApp.Events.myDeleted(uid): 
+        case todoApp.Events.myDeleted(uid):
           for (let i = 0; i < updatedArray.length; i += 1) {
             if (updatedArray[i].id === bitloopsData.id) {
               updatedArray.splice(i, 1);
@@ -209,7 +212,7 @@ function App() {
           setData(updatedArray);
           break;
         case todoApp.Events.updated():
-        case todoApp.Events.myUpdated(uid): 
+        case todoApp.Events.myUpdated(uid):
           for (let i = 0; i < updatedArray.length; i += 1) {
             if (updatedArray[i].id === bitloopsData.updatedData.id) {
               updatedArray[i] = bitloopsData.updatedData;
@@ -222,12 +225,11 @@ function App() {
           break;
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bitloopsEvent]);
 
   return (
     <>
-      <TodoPanel 
+      <TodoPanel
         newValue={newValue}
         setNewValue={setNewValue}
         addItem={addItem}
@@ -239,8 +241,8 @@ function App() {
         handleCheckbox={handleCheckbox}
         data={data}
       />
-      <Header user={user} logout={clearAuth}/>
-      {!user && <GoogleButton loginWithGoogle={loginWithGoogle}/>}
+      <Header user={user} logout={clearAuth} />
+      {!user && <GoogleButton loginWithGoogle={loginWithGoogle} />}
     </>
   );
 }

@@ -1,10 +1,10 @@
-import React, { FC } from 'react';
+import React from 'react'
 
 interface GoogleButtonProps {
   loginWithGoogle: () => void;
 }
 
-export const GoogleButton: FC<GoogleButtonProps> = (props) => {
+function GoogleButton(props: GoogleButtonProps) {
   const { loginWithGoogle } = props;
   return (<div style={{
     display: 'flex',
@@ -75,6 +75,6 @@ export const GoogleButton: FC<GoogleButtonProps> = (props) => {
       Login with Google
     </button>
   </div>);
-};
+}
 
 export default GoogleButton;

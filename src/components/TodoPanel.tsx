@@ -1,4 +1,6 @@
-import React, { FC } from 'react';
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+import React from 'react';
 import { FaTrash } from 'react-icons/fa';
 
 import { Todo } from '../bitloops/proto/todoApp';
@@ -23,7 +25,7 @@ interface TodoProps {
   handleCheckbox: (d: any) => void,
 }
 
-export const TodoPanel: FC<TodoProps> = (props) => {
+function TodoPanel(props: TodoProps): JSX.Element {
   const {
     newValue,
     setNewValue,
@@ -36,6 +38,7 @@ export const TodoPanel: FC<TodoProps> = (props) => {
     handleCheckbox,
     data,
   } = props;
+
   return (
     <div className="todo-list">
       <div className="heading">
@@ -56,7 +59,7 @@ export const TodoPanel: FC<TodoProps> = (props) => {
           if (e.key === 'Enter') addItem(e);
         }}
       />
-      <button onClick={addItem}>Add</button>
+      <button onClick={addItem} type="button">Add</button>
 
       <div className="items">
         <ul>
@@ -96,6 +99,6 @@ export const TodoPanel: FC<TodoProps> = (props) => {
       </div>
     </div>
   );
-};
+}
 
 export default TodoPanel;

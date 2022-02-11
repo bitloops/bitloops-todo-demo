@@ -34,6 +34,7 @@ export class TodoAppClient implements ITodoAppClient {
     created: () => string,
     deleted: () => string,
     updated: () => string,
+    /* eslint-disable */
     myCreated: (uid:string) => string,
     myUpdated: (uid:string) => string,
     myDeleted: (uid:string) => string
