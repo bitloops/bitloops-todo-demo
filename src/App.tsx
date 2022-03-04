@@ -11,6 +11,7 @@ import bitloopsConfig from './bitloopsConfig';
 import TodoPanel from './components/TodoPanel';
 import GoogleButton from './components/GoogleButton';
 import Header from './components/Header';
+import GithubButton from './components/GithubButton';
 
 const ViewStates = {
   ALL: 'All',
@@ -37,6 +38,10 @@ function App() {
 
   const loginWithGoogle = () => {
     todoApp.bitloopsApp.auth.authenticateWithGoogle();
+  };
+
+  const loginWithGithub = () => {
+    todoApp.bitloopsApp.auth.authenticateWithGitHub();
   };
 
   const clearAuth = () => {
@@ -240,6 +245,7 @@ function App() {
       />
       <Header user={user} logout={clearAuth} />
       {!user && <GoogleButton loginWithGoogle={loginWithGoogle} />}
+      {!user && <GithubButton loginWithGithub={loginWithGithub} />}
     </>
   );
 }

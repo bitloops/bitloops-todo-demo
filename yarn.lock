@@ -2912,10 +2912,10 @@ bindings@^1.5.0:
   dependencies:
     file-uri-to-path "1.0.0"
 
-bitloops@^0.1.7:
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/bitloops/-/bitloops-0.1.7.tgz#b76e76251490a4746d89fcac90c69e13342531cd"
-  integrity sha512-re4CfXh3PZTNwu0VwQ1Kv7EPrfWD9sdArFYU5VRZR58fHL6+s6Fm+IQWqDAUIE7FoV2NOKgANSV8bivMqnzCGg==
+bitloops@^0.1.8:
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/bitloops/-/bitloops-0.1.8.tgz#656e59b455fc4a1a7ac2b33e3a510041b958f508"
+  integrity sha512-o0KsCT0iNmdsDHDyoD/AWfEha8Ww6c5XbMownv02Dz//1bKiBIae/Mk59ylcmtkSPi2aaCqMoXQZc0TZw9f5Jw==
   dependencies:
     axios "^0.26.0"
     eventsource-ts "^0.0.9"
