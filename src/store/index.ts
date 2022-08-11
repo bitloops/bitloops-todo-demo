@@ -1,13 +1,15 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import { IToDosService } from '../services/todos';
 import todosReducer from './slices/todos';
+import authReducer from './slices/auth';
+
 import MockToDosService from '../services/todos/mock';
 
 // console.log('Loading Redux store...', process.env.REACT_APP_ENVIRONMENT);
 
 export const store = configureStore({
   reducer: {
-    // auth: authReducer,
+    auth: authReducer,
     // notifications: notificationsSlice,
     todos: todosReducer,
     // business: businessReducer,

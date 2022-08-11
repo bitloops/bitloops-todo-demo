@@ -8,6 +8,9 @@ import GithubButton from './components/GithubButton';
 import { useSelector } from 'react-redux';
 import { createTodo, fetchTodos, selectTodosData } from './store/slices/todos';
 import useAppDispatch from './hooks/useAppDispatch';
+import { UserData } from './infra/auth';
+import DI, { IDI, initialDependencies } from './di';
+import { authChanged, selectUserData } from './store/slices/auth';
 
 const ViewStates = {
   ALL: 'All',
@@ -26,13 +29,34 @@ const getBitloopsEventInitialState = ():
 // let privateUnsubscriptions: Unsubscribe[] = [];
 
 function App() {
-  const [user, setUser] = useState<any | null>(null);
+  const [dependencies, setDependencies] = React.useState<IDI>(initialDependencies);
+  const { auth } = React.useContext(DI)[0];
+
+  const user = useSelector(selectUserData);
+  //  const [user, setUser] = useState<any | null>(null);
+
   const [editable, setEditable] = useState('');
   const [newValue, setNewValue] = useState('');
   const [bitloopsEvent, setBitloopsEvent] = useState(getBitloopsEventInitialState());
   const todos = useSelector(selectTodosData);
   const dispatch = useAppDispatch();
+  const onAuthStateChangedCallback = (user?: UserData) => {
+    console.log('dispatching user', user);
+    if (user) {
+      // const subdomain = window.location.hostname.split('.')[0];
+      // dispatch(fetchBusinessData({subdomain, userUniqueId: user.userUniqueId}));
+    }
+    dispatch(authChanged(user));
+  };
+  useEffect(() => {
+    auth.onAuthStateChanged(onAuthStateChangedCallback);
+    return () => {
+      // unsubscribe(); // unsubscribe on unmount
+      console.log('app unmounted');
+    };
+  }, []);
 
+  useEffect(() => {}, [dependencies]);
   // const loginWithGoogle = () => {
   //   todoApp.bitloopsApp.auth.authenticateWithGoogle();
   // };
@@ -239,21 +263,23 @@ function App() {
 
   return (
     <>
-      <TodoPanel
-        newValue={newValue}
-        setNewValue={setNewValue}
-        addItem={addItem}
-        updateLocalItem={updateLocalItem}
-        editItem={editItem}
-        removeItem={removeItem}
-        editable={editable}
-        setEditable={setEditable}
-        handleCheckbox={handleCheckbox}
-        data={todos}
-      />
-      {/* <Header user={user} logout={clearAuth} />
-      {!user && <GoogleButton loginWithGoogle={loginWithGoogle} />}
-      {!user && <GithubButton loginWithGithub={loginWithGithub} />} */}
+      <DI.Provider value={[dependencies, setDependencies]}>
+        <TodoPanel
+          newValue={newValue}
+          setNewValue={setNewValue}
+          addItem={addItem}
+          updateLocalItem={updateLocalItem}
+          editItem={editItem}
+          removeItem={removeItem}
+          editable={editable}
+          setEditable={setEditable}
+          handleCheckbox={handleCheckbox}
+          data={todos}
+        />
+        <Header user={user} logout={() => auth.clearAuthentication()} />
+        {!user && <GoogleButton loginWithGoogle={() => auth.signInWithGoogle()} />}
+        {!user && <GithubButton loginWithGithub={() => auth.signInWithGoogle()} />}
+      </DI.Provider>
     </>
   );
 }

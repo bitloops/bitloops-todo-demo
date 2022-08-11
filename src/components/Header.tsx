@@ -1,8 +1,9 @@
 // import { BitloopsUser } from 'bitloops';
 import React from 'react';
+import { UserData } from '../infra/auth';
 
 interface HeaderProps {
-  user: any; //BitloopsUser;
+  user?: UserData; //BitloopsUser;
   logout: () => void;
 }
 
@@ -11,7 +12,7 @@ function Header(props: HeaderProps) {
   if (user)
     return (
       <>
-        <div>Hello {user.firstName}</div>
+        <div>Hello {user?.displayName}</div>
         <button onClick={logout} type="submit">
           Logout
         </button>
