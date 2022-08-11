@@ -6,7 +6,7 @@ import GoogleButton from './components/GoogleButton';
 import Header from './components/Header';
 import GithubButton from './components/GithubButton';
 import { useSelector } from 'react-redux';
-import { createTodo, fetchTodos, selectTodosData } from './store/slices/todos';
+import { createTodo, deleteTodoById, fetchTodos, selectTodosData } from './store/slices/todos';
 import useAppDispatch from './hooks/useAppDispatch';
 import { UserData } from './infra/auth';
 import DI, { IDI, initialDependencies } from './di';
@@ -120,7 +120,7 @@ function App() {
 
   const addItem = async (e: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLInputElement>) => {
     e.preventDefault();
-    dispatch(createTodo({ id: uuid(), title: newValue }));
+    await dispatch(createTodo({ id: uuid(), title: newValue })).unwrap();
     // if (user) {
     //   await todoApp.createMine({
     //     status: 'Active',
@@ -136,9 +136,13 @@ function App() {
     // }
 
     setNewValue('');
+    // CQRS Create does not return anything, we need to fetch the new data
+    await dispatch(fetchTodos()).unwrap();
   };
 
   const removeItem = async (id: string) => {
+    console.log('delete clicked');
+    dispatch(deleteTodoById(id));
     // if (user) {
     //   await todoApp.deleteMine({ id });
     // } else {

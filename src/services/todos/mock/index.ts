@@ -47,7 +47,7 @@ class MockToDosService implements IToDosService {
 
   async createTodo(id: string, title: string): Promise<void> {
     const newTodo: Todo = {
-      id: (this.mockData.length + 1).toString(),
+      id,
       title,
       description: 'none',
       status: 'pending',
@@ -61,8 +61,8 @@ class MockToDosService implements IToDosService {
     this.mockData.push(newTodo);
   }
 
-  deleteOneTodoById(id: string): Promise<void> {
-    throw new Error('Method not implemented.');
+  async deleteOneTodoById(id: string): Promise<void> {
+    this.mockData = this.mockData.filter((todo) => todo.id !== id);
   }
 
   /**
