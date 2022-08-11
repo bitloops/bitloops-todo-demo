@@ -123,6 +123,7 @@ class FirebaseAuthProvider implements IAuthProvider {
       });
   }
 
+  // https://firebase.google.com/docs/auth/admin/custom-claims#propagate_custom_claims_to_the_client
   async getFreshToken(): Promise<string> {
     if (!this.auth) {
       throw new Error('Auth is not initialized');
