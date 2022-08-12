@@ -4,11 +4,10 @@ import { FaTrash } from 'react-icons/fa';
 import logo from '../assets/bitloops_175x40_transparent.png';
 import { Todo } from '../services/todos';
 
-const ViewStates = {
-  ALL: 'All',
-  ACTIVE: 'Active',
-  COMPLETED: 'Completed',
-};
+const enum EToDoStatus {
+  COMPLETED = 'completed',
+  PENDING = 'pending',
+}
 
 interface TodoProps {
   editable: undefined | string;
@@ -70,7 +69,7 @@ function TodoPanel(props: TodoProps): JSX.Element {
                   className="checkbox"
                   id={id}
                   type="checkbox"
-                  checked={status === ViewStates.COMPLETED}
+                  checked={status === EToDoStatus.COMPLETED}
                   onChange={handleCheckbox}
                 />
                 {editable === id ? (

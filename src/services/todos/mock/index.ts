@@ -78,6 +78,12 @@ class MockToDosService implements IToDosService {
     this.data[todoIndex] = todo;
   }
 
+  async checkTodo(id: string, checked: boolean): Promise<void> {
+    const todoIndex = this.data.findIndex((todo) => todo.id === id);
+    let todo: Todo = { ...this.data[todoIndex] };
+    todo.status = checked ? 'completed' : 'pending';
+    this.data[todoIndex] = todo;
+  }
   /**
    * Used because of redux
    */

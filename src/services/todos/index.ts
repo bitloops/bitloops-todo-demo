@@ -28,4 +28,5 @@ export interface IToDosService {
   fetchTodo(id: string): Promise<Todo>;
   deleteOneTodoById(id: string): Promise<void>;
   updateTodo(updateData: UpdateTodoDTO): Promise<void>;
+  checkTodo(id:string, checked: boolean): Promise<void>;
 }

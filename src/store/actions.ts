@@ -9,6 +9,7 @@ const actions = {
     CREATE: 'todos/create',
     DELETE: 'todos/delete',
     UPDATE: 'todos/update',
+    CHECK: 'todos/check',
   },
 };
 

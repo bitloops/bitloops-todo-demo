@@ -6,17 +6,19 @@ import GoogleButton from './components/GoogleButton';
 import Header from './components/Header';
 import GithubButton from './components/GithubButton';
 import { useSelector } from 'react-redux';
-import { createTodo, deleteTodo, fetchTodo, fetchTodos, selectTodosData, updateTodo } from './store/slices/todos';
+import {
+  createTodo,
+  deleteTodo,
+  fetchTodo,
+  fetchTodos,
+  selectTodosData,
+  updateTodo,
+  checkTodo,
+} from './store/slices/todos';
 import useAppDispatch from './hooks/useAppDispatch';
 import { UserData } from './infra/auth';
 import DI, { IDI, initialDependencies } from './di';
 import { authChanged, selectUserData } from './store/slices/auth';
-
-const ViewStates = {
-  ALL: 'All',
-  ACTIVE: 'Active',
-  COMPLETED: 'Completed',
-};
 
 const getBitloopsEventInitialState = ():
   | {
@@ -61,8 +63,8 @@ function App() {
   useEffect(() => {
     console.log('useEffect editTodoValue', editTodoValue, editableTodoId);
     if (editTodoValue && editableTodoId) {
-      dispatch(updateTodo({todoId: editableTodoId, updateData: {title: editTodoValue}}));
-      dispatch(fetchTodo({todoId: editableTodoId}));
+      dispatch(updateTodo({ todoId: editableTodoId, updateData: { title: editTodoValue } }));
+      dispatch(fetchTodo({ todoId: editableTodoId }));
     }
   }, [editTodoValue]);
 
@@ -116,7 +118,6 @@ function App() {
     console.log('updating Todo value', id, value);
     setEditTodoValue(value);
 
-    
     // const { id } = e.target;
     // const { value } = e.target;
     // const newData: Todo[] = JSON.parse(JSON.stringify(data));
@@ -132,6 +133,9 @@ function App() {
   const handleCheckbox = async (e: any) => {
     const { id } = e.target;
     const { checked } = e.target;
+    console.log('handling Checkbox', id, checked);
+    dispatch(checkTodo({ todoId: id, checked: checked }));
+    dispatch(fetchTodo({ todoId: id }));
     // const newData: Todo[] = JSON.parse(JSON.stringify(data));
     // for (let i = 0; i < newData.length; i += 1) {
     //   if (newData[i].id === id) {
@@ -156,7 +160,6 @@ function App() {
     //   setUser(user);
     // });
   }, []);
-
 
   return (
     <>

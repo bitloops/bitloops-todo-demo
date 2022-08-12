@@ -70,6 +70,18 @@ export const updateTodo = createAsyncThunk<void, { todoId: string; updateData: {
   },
 );
 
+export const checkTodo = createAsyncThunk<void, { todoId: string; checked: boolean }, AsyncThunkConfig>(
+  actions.todos.CHECK,
+  async (payload, thunkAPI) => {
+    console.log('checking todo', payload);
+    try {
+      await thunkAPI.extra.services.todos.checkTodo(payload.todoId, payload.checked);
+    } catch (error) {
+      console.error(error);
+    }
+  },
+);
+
 export const todosSlice = createSlice({
   name: 'todos',
   initialState,
