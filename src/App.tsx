@@ -6,7 +6,7 @@ import GoogleButton from './components/GoogleButton';
 import Header from './components/Header';
 import GithubButton from './components/GithubButton';
 import { useSelector } from 'react-redux';
-import { createTodo, deleteTodoById, fetchTodos, selectTodosData } from './store/slices/todos';
+import { createTodo, deleteTodo, fetchTodo, fetchTodos, selectTodosData, updateTodo } from './store/slices/todos';
 import useAppDispatch from './hooks/useAppDispatch';
 import { UserData } from './infra/auth';
 import DI, { IDI, initialDependencies } from './di';
@@ -35,9 +35,9 @@ function App() {
   const user = useSelector(selectUserData);
   //  const [user, setUser] = useState<any | null>(null);
 
-  const [editable, setEditable] = useState('');
-  const [newValue, setNewValue] = useState('');
-  const [bitloopsEvent, setBitloopsEvent] = useState(getBitloopsEventInitialState());
+  const [newTodoValue, setNewTodoValue] = useState('');
+  const [editableTodoId, setEditableTodoId] = useState<undefined | string>();
+  const [editTodoValue, setEditTodoValue] = useState<undefined | string>();
   const todos = useSelector(selectTodosData);
   const dispatch = useAppDispatch();
   const onAuthStateChangedCallback = (user?: UserData) => {
@@ -57,92 +57,27 @@ function App() {
   }, []);
 
   useEffect(() => {}, [dependencies]);
-  // const loginWithGoogle = () => {
-  //   todoApp.bitloopsApp.auth.authenticateWithGoogle();
-  // };
 
-  // const loginWithGithub = () => {
-  //   todoApp.bitloopsApp.auth.authenticateWithGitHub();
-  // };
-
-  // const clearAuth = () => {
-  //   todoApp.bitloopsApp.auth.clearAuthentication();
-  // };
-
-  // const fetchToDos = async () => {
-  //   const [response, error] = user ? await todoApp.getMine() : await todoApp.getAll();
-  //   if (error) return;
-  //   if (response?.data) setData(response.data);
-  // };
-
-  // async function subscribePublic() {
-  //   const createUnsubscribe = await todoApp.subscribe(todoApp.Events.created(), (d) =>
-  //     setBitloopsEvent({ event: todoApp.Events.created(), bitloopsData: d }),
-  //   );
-  //   const deleteUnsubscribe = await todoApp.subscribe(todoApp.Events.deleted(), (d) =>
-  //     setBitloopsEvent({ event: todoApp.Events.deleted(), bitloopsData: d }),
-  //   );
-  //   const updateUnsubscribe = await todoApp.subscribe(todoApp.Events.updated(), (d) =>
-  //     setBitloopsEvent({ event: todoApp.Events.updated(), bitloopsData: d }),
-  //   );
-  //   publicUnsubscriptions.push(createUnsubscribe, updateUnsubscribe, deleteUnsubscribe);
-  //   console.log('publicUnsubscriptions', publicUnsubscriptions);
-  //   fetchToDos();
-  // }
-
-  // async function subscribeMine() {
-  //   const { uid } = user;
-  //   const myCreatedUnsubscribe = await todoApp.subscribe(todoApp.Events.myCreated(uid), (d) =>
-  //     setBitloopsEvent({ event: todoApp.Events.myCreated(uid), bitloopsData: d }),
-  //   );
-  //   const myDeletedUnsubscribe = await todoApp.subscribe(todoApp.Events.myDeleted(uid), (d) =>
-  //     setBitloopsEvent({ event: todoApp.Events.myDeleted(uid), bitloopsData: d }),
-  //   );
-  //   const myUpdatedUnsubscribe = await todoApp.subscribe(todoApp.Events.myUpdated(uid), (d) =>
-  //     setBitloopsEvent({ event: todoApp.Events.myUpdated(uid), bitloopsData: d }),
-  //   );
-
-  //   privateUnsubscriptions.push(myCreatedUnsubscribe, myDeletedUnsubscribe, myUpdatedUnsubscribe);
-  //   fetchToDos();
-  // }
-
-  // async function unsubscribePublic() {
-  //   console.log('unsubscribePublic', publicUnsubscriptions.length);
-  //   await Promise.all(publicUnsubscriptions.map((unsubscribeFunc) => unsubscribeFunc()));
-  //   publicUnsubscriptions = [];
-  // }
-
-  // async function unsubscribeMine() {
-  //   console.log('unsubscribeMine', privateUnsubscriptions.length);
-  //   await Promise.all(privateUnsubscriptions.map((unsubscribeFunc) => unsubscribeFunc()));
-  //   privateUnsubscriptions = [];
-  // }
+  useEffect(() => {
+    console.log('useEffect editTodoValue', editTodoValue, editableTodoId);
+    if (editTodoValue && editableTodoId) {
+      dispatch(updateTodo({todoId: editableTodoId, updateData: {title: editTodoValue}}));
+      dispatch(fetchTodo({todoId: editableTodoId}));
+    }
+  }, [editTodoValue]);
 
   const addItem = async (e: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLInputElement>) => {
     e.preventDefault();
-    await dispatch(createTodo({ id: uuid(), title: newValue })).unwrap();
-    // if (user) {
-    //   await todoApp.createMine({
-    //     status: 'Active',
-    //     text: newValue,
-    //     id: uuid(),
-    //   });
-    // } else {
-    //   await todoApp.create({
-    //     status: 'Active',
-    //     text: newValue,
-    //     id: uuid(),
-    //   });
-    // }
+    await dispatch(createTodo({ id: uuid(), title: newTodoValue })).unwrap();
 
-    setNewValue('');
+    setNewTodoValue('');
     // CQRS Create does not return anything, we need to fetch the new data
     await dispatch(fetchTodos()).unwrap();
   };
 
   const removeItem = async (id: string) => {
     console.log('delete clicked');
-    dispatch(deleteTodoById(id));
+    dispatch(deleteTodo(id));
     // if (user) {
     //   await todoApp.deleteMine({ id });
     // } else {
@@ -151,8 +86,15 @@ function App() {
   };
 
   const editItem = async (e: any) => {
+    setEditableTodoId(undefined);
     // const { id } = e.target;
     // const { value } = e.target;
+    // console.log('edit clicked', id, value);
+    // setEditTodoValue(value);
+    // if (editTodoValue) {
+    //   dispatch(updateTodo({todoId: id, updateData: {title: editTodoValue}}));
+    //   dispatch(fetchTodo({todoId: id}));
+    // }
     // const newData: Todo[] = JSON.parse(JSON.stringify(data));
     // for (let i = 0; i < newData.length; i += 1) {
     //   if (newData[i].id === id) {
@@ -168,7 +110,13 @@ function App() {
     // setEditable('');
   };
 
-  const updateLocalItem = (e: any) => {
+  const updateTodoValue = (e: any) => {
+    const { id } = e.target;
+    const { value } = e.target;
+    console.log('updating Todo value', id, value);
+    setEditTodoValue(value);
+
+    
     // const { id } = e.target;
     // const { value } = e.target;
     // const newData: Todo[] = JSON.parse(JSON.stringify(data));
@@ -182,8 +130,8 @@ function App() {
   };
 
   const handleCheckbox = async (e: any) => {
-    // const { id } = e.target;
-    // const { checked } = e.target;
+    const { id } = e.target;
+    const { checked } = e.target;
     // const newData: Todo[] = JSON.parse(JSON.stringify(data));
     // for (let i = 0; i < newData.length; i += 1) {
     //   if (newData[i].id === id) {
@@ -209,74 +157,19 @@ function App() {
     // });
   }, []);
 
-  /**
-   * If user exists then unsubscribe public
-   * subscriptions and subscribe to mine and
-   * vice versa
-   */
-  // useEffect(() => {
-  //   if (user) {
-  //     subscribeMine();
-  //     unsubscribePublic();
-  //   } else {
-  //     subscribePublic();
-  //     unsubscribeMine();
-  //   }
-  // }, [user]);
-
-  /**
-   * Handle each event received appropriately
-   */
-  // useEffect(() => {
-  //   if (bitloopsEvent) {
-  //     const { bitloopsData, event } = bitloopsEvent;
-  //     const updatedArray = JSON.parse(JSON.stringify(data));
-
-  //     const uid = user?.uid;
-  //     switch (event) {
-  //       case todoApp.Events.created():
-  //       case todoApp.Events.myCreated(uid):
-  //         updatedArray.push(bitloopsData.newData);
-  //         setData(updatedArray);
-  //         break;
-  //       case todoApp.Events.deleted():
-  //       case todoApp.Events.myDeleted(uid):
-  //         for (let i = 0; i < updatedArray.length; i += 1) {
-  //           if (updatedArray[i].id === bitloopsData.id) {
-  //             updatedArray.splice(i, 1);
-  //             break;
-  //           }
-  //         }
-  //         setData(updatedArray);
-  //         break;
-  //       case todoApp.Events.updated():
-  //       case todoApp.Events.myUpdated(uid):
-  //         for (let i = 0; i < updatedArray.length; i += 1) {
-  //           if (updatedArray[i].id === bitloopsData.updatedData.id) {
-  //             updatedArray[i] = bitloopsData.updatedData;
-  //             break;
-  //           }
-  //         }
-  //         setData(updatedArray);
-  //         break;
-  //       default:
-  //         break;
-  //     }
-  //   }
-  // }, [bitloopsEvent]);
 
   return (
     <>
       <DI.Provider value={[dependencies, setDependencies]}>
         <TodoPanel
-          newValue={newValue}
-          setNewValue={setNewValue}
+          newValue={newTodoValue}
+          setNewValue={setNewTodoValue}
           addItem={addItem}
-          updateLocalItem={updateLocalItem}
+          updateTodoValue={updateTodoValue}
           editItem={editItem}
           removeItem={removeItem}
-          editable={editable}
-          setEditable={setEditable}
+          editable={editableTodoId}
+          setEditable={setEditableTodoId}
           handleCheckbox={handleCheckbox}
           data={todos}
         />

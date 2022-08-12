@@ -11,13 +11,13 @@ const ViewStates = {
 };
 
 interface TodoProps {
-  editable: string;
+  editable: undefined | string;
   newValue: string;
   setNewValue: React.Dispatch<React.SetStateAction<string>>;
-  setEditable: React.Dispatch<React.SetStateAction<string>>;
+  setEditable: React.Dispatch<React.SetStateAction<undefined | string>>;
   data: Todo[] | [];
   addItem: (e: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLInputElement>) => void;
-  updateLocalItem: (d: any) => void;
+  updateTodoValue: (d: any) => void;
   editItem: (e: any) => void;
   removeItem: (id: string) => void;
   handleCheckbox: (d: any) => void;
@@ -28,7 +28,7 @@ function TodoPanel(props: TodoProps): JSX.Element {
     newValue,
     setNewValue,
     addItem,
-    updateLocalItem,
+    updateTodoValue,
     editItem,
     removeItem,
     editable,
@@ -79,7 +79,7 @@ function TodoPanel(props: TodoProps): JSX.Element {
                     value={text}
                     id={id}
                     className="todo-list-input"
-                    onChange={updateLocalItem}
+                    onChange={updateTodoValue}
                     onKeyPress={(event) => event.key === 'Enter' && editItem(event)}
                     onBlur={editItem}
                   />

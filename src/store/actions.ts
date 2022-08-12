@@ -3,13 +3,12 @@ const actions = {
     SIGNED_OUT: 'auth/signedOut',
     SIGNED_IN: 'auth/signedIn',
   },
-  applications: {
-    FETCH_ALL: 'applications/fetchAll',
-    CREATE: 'applications/create',
-  },
   todos: {
     FETCH_ALL: 'todos/fetchAll',
+    FETCH_ONE: 'todos/fetchOne',
     CREATE: 'todos/create',
+    DELETE: 'todos/delete',
+    UPDATE: 'todos/update',
   },
 };
 

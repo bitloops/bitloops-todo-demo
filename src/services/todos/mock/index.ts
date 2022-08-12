@@ -1,7 +1,7 @@
-import { IToDosService, Todo } from '../index';
+import { IToDosService, Todo, UpdateTodoDTO } from '../index';
 
 class MockToDosService implements IToDosService {
-  private mockData: Todo[] = [
+  private data: Todo[] = [
     {
       id: '24f132d4-6a41-4268-86d3-8d407eca3e85',
       title: 'Get milk',
@@ -14,7 +14,7 @@ class MockToDosService implements IToDosService {
       ownerId: 'mockUserId',
     },
     {
-      id: '24f132d4-6a41-4268-86d3-dd407eca3e85',
+      id: 'f8ea905b-47a9-429a-b272-55b6ba62b39c',
       title: 'Go shopping',
       description: 'none',
       status: 'pending',
@@ -25,7 +25,7 @@ class MockToDosService implements IToDosService {
       ownerId: 'mockUserId',
     },
     {
-      id: '24f132d4-6a41-4268-86d3-8g407eca3e85',
+      id: '3aacc576-2011-42d1-a18b-bbdfc683a4c1',
       title: 'Water plants',
       description: 'none',
       status: 'pending',
@@ -42,7 +42,11 @@ class MockToDosService implements IToDosService {
   }
 
   async getAllMyToDos(): Promise<Todo[]> {
-    return this.copy(this.mockData);
+    return this.copy(this.data);
+  }
+
+  async fetchTodo(id: string): Promise<Todo> {
+    return this.data.filter((todo) => todo.id === id)[0];
   }
 
   async createTodo(id: string, title: string): Promise<void> {
@@ -58,11 +62,20 @@ class MockToDosService implements IToDosService {
       ownerId: 'mockUserId',
     };
 
-    this.mockData.push(newTodo);
+    this.data.push(newTodo);
   }
 
   async deleteOneTodoById(id: string): Promise<void> {
-    this.mockData = this.mockData.filter((todo) => todo.id !== id);
+    this.data = this.data.filter((todo) => todo.id !== id);
+  }
+
+  async updateTodo(updateData: UpdateTodoDTO): Promise<void> {
+    const todoIndex = this.data.findIndex((todo) => todo.id === updateData.todoId);
+    let todo: Todo = { ...this.data[todoIndex] };
+    updateData.updateData.title && (todo.title = updateData.updateData.title);
+    updateData.updateData.description && (todo.description = updateData.updateData.description);
+    updateData.updateData.color && (todo.color = updateData.updateData.color);
+    this.data[todoIndex] = todo;
   }
 
   /**
