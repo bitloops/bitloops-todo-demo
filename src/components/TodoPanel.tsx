@@ -81,6 +81,7 @@ function TodoPanel(props: TodoProps): JSX.Element {
                     onChange={updateTodoValue}
                     onKeyPress={(event) => event.key === 'Enter' && editItem(event)}
                     onBlur={editItem}
+                    autoFocus
                   />
                 ) : (
                   <p
