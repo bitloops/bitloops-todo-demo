@@ -1,90 +1,63 @@
 syntax = "proto3";
 
+package todo;
+
+service Authentication {
+  // rpc Login(LoginRequest) returns (LoginResponse);
+  rpc Register(RegisterRequest) returns (RegisterResponse);
+  rpc UpdateEmail(UpdateEmailRequest) returns (UpdateEmailResponse);
+}
+
 service TodoApp {
-	rpc GetAll(GetAllRequest) returns (GetAllResponse);
-	rpc Create(CreateRequest) returns (CreateResponse);
-	rpc Update(UpdateRequest) returns (UpdateResponse);
-	rpc Delete(DeleteRequest) returns (DeleteResponse);
-	rpc GetMine(GetMineRequest) returns (GetMineResponse);
-	rpc CreateMine(CreateMineRequest) returns (CreateMineResponse);
-	rpc UpdateMine(UpdateMineRequest) returns (UpdateMineResponse);
-	rpc DeleteMine(DeleteMineRequest) returns (DeleteMineResponse);
+	rpc AddTodo(AddTodoRequest) returns (AddTodoResponse);
+  rpc CompleteTodo (CompleteTodoRequest) returns (CompleteTodoResponse);
+	rpc GetAllMyTodos(GetAllMyTodosRequest) returns (GetAllMyTodosResponse);
 }
 
-message GetAllRequest {
-
-}
-
-message CreateRequest {
-	optional string id = 1;
+message AddTodoRequest {
 	string text = 2;
-	optional string status = 3;
 }
 
-message UpdateRequest {
-	string id = 1;
-	string text = 2;
-	string status = 3;
+message AddTodoResponse {
+  string id = 1;
 }
 
-message DeleteRequest {
-	string id = 1;
+message CompleteTodoRequest {
+  string id = 1;
 }
 
-message GetMineRequest {
+message CompleteTodoResponse {}
 
+message GetAllMyTodosRequest {}
+
+message GetAllMyTodosResponse {
+  repeated Todo todos = 1;
 }
 
-message CreateMineRequest {
-	string id = 1;
-	string text = 2;
-	string status = 3;
+// message LoginRequest {
+//   string email = 1;
+//   string password = 2;
+// }
+
+// message LoginResponse {
+//   string token = 1;
+// }
+
+message RegisterRequest {
+  string email = 1;
+  string password = 2;
 }
 
-message UpdateMineRequest {
-	string id = 1;
-	string text = 2;
-	string status = 3;
-}
-
-message DeleteMineRequest {
-	string id = 1;
-}
-
-message GetAllResponse {
-	string data = 1;
-}
-
-message CreateResponse {
-	string wasCreated = 1;
-}
-
-message UpdateResponse {
-	string data = 1;
-}
-
-message DeleteResponse {
-	string wasDeleted = 1;
-}
-
-message GetMineResponse {
-	string data = 1;
-}
-
-message CreateMineResponse {
-	string wasCreated = 1;
-}
-
-message UpdateMineResponse {
-	string wasUpdated = 1;
-}
-
-message DeleteMineResponse {
-	string wasDeleted = 1;
-}
+message RegisterResponse {}
 
 message Todo {
   string id = 1;
   string text = 2;
-  string status = 3;
+  bool completed = 3;
 }
+
+message UpdateEmailRequest {
+  string email = 1;
+}
+
+message UpdateEmailResponse {}

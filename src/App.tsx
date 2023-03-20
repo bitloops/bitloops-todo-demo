@@ -9,9 +9,10 @@ import './App.css';
 import { Todo } from './bitloops/proto/todoApp';
 import bitloopsConfig from './bitloopsConfig';
 import TodoPanel from './components/TodoPanel';
-import GoogleButton from './components/GoogleButton';
+// import GoogleButton from './components/GoogleButton';
 import Header from './components/Header';
-import GithubButton from './components/GithubButton';
+// import GithubButton from './components/GithubButton';
+import LoginForm from './components/LoginForm';
 
 const ViewStates = {
   ALL: 'All',
@@ -36,13 +37,17 @@ function App() {
   const [newValue, setNewValue] = useState('');
   const [bitloopsEvent, setBitloopsEvent] = useState(getBitloopsEventInitialState());
 
-  const loginWithGoogle = () => {
-    todoApp.bitloopsApp.auth.authenticateWithGoogle();
+  const loginWithEmailPassword = async (email: string, password: string) => {
+    todoApp.bitloopsApp.auth.authenticateWithEmailPassword(email, password);
   };
+  
+  // const loginWithGoogle = () => {
+  //   todoApp.bitloopsApp.auth.authenticateWithGoogle();
+  // };
 
-  const loginWithGithub = () => {
-    todoApp.bitloopsApp.auth.authenticateWithGitHub();
-  };
+  // const loginWithGithub = () => {
+  //   todoApp.bitloopsApp.auth.authenticateWithGitHub();
+  // };
 
   const clearAuth = () => {
     todoApp.bitloopsApp.auth.clearAuthentication();
@@ -244,8 +249,8 @@ function App() {
         data={data}
       />
       <Header user={user} logout={clearAuth} />
-      {!user && <GoogleButton loginWithGoogle={loginWithGoogle} />}
-      {!user && <GithubButton loginWithGithub={loginWithGithub} />}
+      {!user && <LoginForm loginWithEmailPassword={loginWithEmailPassword} />}
+      {/* {!user && <GithubButton loginWithGithub={loginWithGithub} />} */}
     </>
   );
 }
